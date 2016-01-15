@@ -1,7 +1,7 @@
 Creates GPX tracks for all strava activities of a user. Uses streams api v3 to reconstruct the uploaded tracks.
 
 1. Checkout repo
-2. Put your access token for the strava api in a file name access_token.txt directly in the checked out repo
+2. Put your access token for the strava api in a file named 'access_token.txt' directly in the checked out repo
 3. Call strava.rb
 
 Reconstructed GPX tracks from all your activities will be placed in
