@@ -1,7 +1,6 @@
 require "json"
 require "yaml"
 require "nokogiri"
-require "oauth"
 
 ACCESS_TOKEN = File.read("#{File.dirname(__FILE__)}/access_token.txt")
 
