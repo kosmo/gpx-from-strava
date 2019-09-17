@@ -1,3 +1,5 @@
+Due to changes (OAUTH) on the Strava API this won't work anymore. I am looking for a solution.
+
 Creates GPX tracks for all strava activities of a user. Uses streams api v3 to reconstruct the uploaded tracks.
 
 1. Checkout repo
