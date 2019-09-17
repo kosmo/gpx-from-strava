@@ -1,16 +1,23 @@
 require "json"
 require "yaml"
 require "nokogiri"
+require "oauth"
 
-ACCESS_TOKEN = File.read("access_token.txt").strip
-activities = JSON.parse(`curl -G https://www.strava.com/api/v3/activities -d access_token=#{ACCESS_TOKEN}`)
+ACCESS_TOKEN = File.read("#{File.dirname(__FILE__)}/access_token.txt")
+
+response = JSON.parse(`curl -X POST https://www.strava.com/oauth/token -F client_id=1924 -F client_secret=097a5cbf7da9d0d9aa80ebd50497d20d927321e6 -F code=#{ACCESS_TOKEN} -F grant_type=authorization_code`)
+activities = JSON.parse(`curl -G https://www.strava.com/api/v3/activities -H "Authorization: Bearer #{response["access_token"]}"`)
 
 for activity in activities do
-  filename = "#{File.basename(activity["external_id"], ".*")}_#{activity["start_date"]}.gpx"
+  unless external_id = activity["external_id"]
+    external_id = ""
+  end
+  
+  filename = "#{File.basename(external_id, ".*")}_#{activity["start_date"]}.gpx"
   raise "file #{filename} exists allready" if File.exists?(filename)
 
-  stream = JSON.parse(`curl -G https://www.strava.com/api/v3/activities/#{activity["id"]}/streams/latlng,altitude,time -d access_token=#{ACCESS_TOKEN}`)
-
+  stream = JSON.parse(`curl -G https://www.strava.com/api/v3/activities/#{activity["id"]}/streams/latlng,altitude,time -H "Authorization: Bearer #{response["access_token"]}"`)
+  
   latlng   = stream.map{ |entry| entry["data"] if entry["type"] == "latlng" }.compact.flatten(1).each_with_index.map{ |value, index| [index, value] }.collect{|index, a| {:index => index, :lat => a[0], :lng => a[1]}}
   altitude = stream.map{ |entry| entry["data"] if entry["type"] == "altitude" }.compact.flatten(1).each_with_index.map{ |value, index| [index, value] }.collect{|index, a| {:index => index, :altitude => a }}
   time     = stream.map{ |entry| entry["data"] if entry["type"] == "time" }.compact.flatten(1).each_with_index.map{ |value, index| [index, value] }.collect{|index, a| {:index => index, :time => a }}
