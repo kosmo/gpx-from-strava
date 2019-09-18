@@ -1,5 +1,3 @@
-Due to a Strava bug (see https://stackoverflow.com/questions/52880434/problem-with-access-token-in-strava-api-v3-get-all-athlete-activities) this will only work till October the 15th. 
-
 Creates GPX tracks for all strava activities of a user. Uses streams api v3 to reconstruct the uploaded tracks.
 
 1. Checkout repo
